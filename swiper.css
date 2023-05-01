@@ -1,0 +1,33 @@
+.content img {
+  display: block;
+  max-width: 80vw!important;  
+  object-fit: contain;
+}
+
+.content figure {
+  display: block;
+  max-width: 80vw !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  object-fit: contain;
+}
+
+.content figure >img {
+  display: block;
+  max-width: 80vw !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  object-fit: contain;
+}
+
+#offcanvasStumbleW{
+  max-width: 75vw;
+}
+
+.content iframe {
+    display: block;
+    max-width: 80vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    object-fit: contain;
+}

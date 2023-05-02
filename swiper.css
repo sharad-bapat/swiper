@@ -10,6 +10,7 @@
   margin-left: auto !important;
   margin-right: auto !important;
   object-fit: contain;
+  max-height: 40vh;
 }
 
 .content figure >img {
@@ -18,6 +19,7 @@
   margin-left: auto !important;
   margin-right: auto !important;
   object-fit: contain;
+  max-height: 40vh !important;
 }
 
 #offcanvasStumbleW{
@@ -30,4 +32,8 @@
     margin-left: auto !important;
     margin-right: auto !important;
     object-fit: contain;
+}
+
+figcaption {
+    display: none;
 }

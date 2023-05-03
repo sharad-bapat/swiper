@@ -1,14 +1,12 @@
 
-// rss("https://winter-smoke-73a6.sixyjntpqun7805.workers.dev/?url=http://www.engadget.com/rss-full.xml").then(data => { items = data.items; showItem(0) });
 let currentIndex = 0
 let items = [];
 
-var container = document.getElementById("content");
+var container = document.getElementById("main");
 container.addEventListener('touchstart', function (event) {
     touchStartX = event.touches[0].clientX;
     touchStartY = event.touches[0].clientY;
 });
-
 container.addEventListener('touchend', function (event) {
     touchEndX = event.changedTouches[0].clientX;
     touchEndY = event.changedTouches[0].clientY;
@@ -39,193 +37,163 @@ container.addEventListener('touchend', function (event) {
 });
 
 function showItem(index) {
-
     try {
 
-        console.log(items)
+        var container1 = document.getElementById("content");
         items = items.sort((a, b) => new Date(b.published) - new Date(a.published));
         const item = items[index];
 
         const div = document.createElement('div');
 
+        const datediv = document.createElement('p')
+        const date = new Date(item.published);
+        // const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        // const weekday = weekdays[date.getDay()];
+        // const day = date.getDate();        
+        // const month = date.toLocaleString('default', { month: 'long' });
+        // const year = date.getFullYear();
+        // const hours = ('0' + date.getHours()).slice(-2);
+        // const minutes = ('0' + date.getMinutes()).slice(-2);
+        // const seconds = ('0' + date.getSeconds()).slice(-2);
+        // const formattedDate = `${weekday}, ${month} ${day}, ${year}, ${hours}:${minutes}:${seconds}`;
+        const formattedDate = date.toLocaleString(undefined, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+        });
+        datediv.innerHTML = `<p class="text-centre">${formattedDate}</p>`;
+
         const title = document.createElement('div');
-        title.innerHTML = `<h1 class="fw-bold">${item.title}</h1>`;
+        title.innerHTML = `<h1 class="fw-bold mt-4">${item.title}</h1>`;
 
-        // let snippetText = item["contentSnippet"] ? item["contentSnippet"] : ``;
-
-        // const snippet = document.createElement('div');
-        // snippet.innerHTML = `<p>${snippetText}</p>`;
 
         let contentText = item.content ? item.content : ``;
 
         const content = document.createElement('div');
         content.innerHTML = `<p class="mt-4">${contentText}</p>`;
 
-        const imgsrc = document.createElement('img');        
+        const imgsrc = document.createElement('img');
         imgsrc.setAttribute('src', item.visual);
         imgsrc.setAttribute('alt', 'image');
-
-        // const favicon = document.createElement('img');        
-        // favicon.setAttribute('src', `https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${new URL(item.canonicalUrl).hostname}&size=32`);
-        // favicon.setAttribute('alt', new URL(item.canonicalUrl).hostname);
-
 
         const link = document.createElement('p');
         let url = item.canonicalUrl ? item.canonicalUrl : ``;
         let hostname = "";
-        try{
-            hostname =  new URL(url).hostname
-        }catch(err){
-            hostname=""
-        }       
+        try {
+            hostname = new URL(url).hostname
+        } catch (err) {
+            hostname = ""
+        }
         link.innerHTML = `<a href="${url}" target="_blank">${hostname}</a>`;
         link.className = 'small text-muted';
 
         console.log(hostname, item.published)
 
-        // div.appendChild(img);  
-        // div.appendChild(favicon);          
-        div.appendChild(title);
+        div.appendChild(datediv);
         div.appendChild(imgsrc);
-        // div.appendChild(snippet);
+        div.appendChild(title);
         div.appendChild(content);
         div.appendChild(link);
 
-        // div.appendChild(date);          
-        container.innerHTML = '';
-        container.appendChild(div);
+        container1.innerHTML = '';
+        container1.appendChild(div);
+
+        const images = container1.querySelectorAll('img');
+        const srcMap = {};
+
+        for (const image of images) {
+            if (image.src.split('?').shift() in srcMap) {                
+                image.remove();
+            } else {
+                srcMap[image.src.split('?').shift()] = true;
+            }
+        }
+
     } catch (err) {
         console.log(err.stack);
     }
-
-
 }
 
+var urls = [
 
-// function getData(urls){
-//     items = [];
-//     Promise.all(
-//         urls.map(url => rss("https://winter-smoke-73a6.sixyjntpqun7805.workers.dev/?url=" + url).catch(error => ({ error })))
-//       )
-//         .then(results => {
-//           results.forEach(result => {
-//             if (result.error) {
-//               console.error(`Error fetching RSS feed: ${result.error.message}`);
-//               return;
-//             }
-//             items = [...items, ...result.items];
-//             items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate));
-//           });
-//           showItem(0);
-//         })
-//         .catch(error => {
-//           console.error(`Error fetching RSS feeds: ${error.message}`);
-//         });
-
-// }
-
-var home_urls = [
-    // `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.abcnews.com/abcnews/topstories&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683049962262&ct=feedly.desktop&cv=31.0.1792`,
+    // world news
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.npr.org/rss/rss.php?&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683005628303&ct=feedly.desktop&cv=31.0.1792`,
-    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.guardian.co.uk/rssfeed/0,,1,00.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683050154579&ct=feedly.desktop&cv=31.0.1792`,
-    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683050396951&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://english.aljazeera.net/Services/Rss/?PostingId=2007731105943979989&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092211437&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.bbci.co.uk/news/world/rss.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052577057&ct=feedly.desktop&cv=31.0.1792`,
-]
 
-var india_urls = [
-
+    //india news
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.dnaindia.com/syndication/rss,catID-0.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683051862305&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.feedburner.com/ndtvnews-top-stories&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683051931281&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://timesofindia.indiatimes.com/rssfeedstopstories.cms&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683051980576&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.ibnlive.com/rss/india.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052014746&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.thehindu.com/news/national/?service=rss&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092106707&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/https://www.altnews.in/feed/&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092251684&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.opindia.com/feed/&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092371563&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.feedburner.com/TheBetterIndia&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092498638&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/https://blog.feedly.com/category/features-tutorials/feed/&count=1&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092205024&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/https://thewire.in/rss&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092632622&ct=feedly.desktop&cv=31.0.1792`,
 
-]
-
-var business_urls = [
-
+    //business news
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds2.feedburner.com/businessinsider&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052419019&ct=feedly.desktop&cv=31.0.1792`,
-    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.feedburner.com/entrepreneur/latest&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052454625&ct=feedly.desktop&cv=31.0.1792`,
-    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.feedburner.com/fastcompany/headlines&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052488861&ct=feedly.desktop&cv=31.0.1792`,
-    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://fortune.com/feed/&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052520611&ct=feedly.desktop&cv=31.0.1792`,
+    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://qz.com/feed/&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683092437230&ct=feedly.desktop&cv=31.0.1792`,
 
-]
 
-var tech_urls = [
+    //tech news
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.engadget.com/rss-full.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052780456&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.fromquarkstoquasars.com/feed/&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052813934&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.gawker.com/gizmodo/full&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052837882&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://feeds.feedburner.com/Techcrunch&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052856972&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.theverge.com/rss/full.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683052880649&ct=feedly.desktop&cv=31.0.1792`,
 
-]
-
-var bollywood_urls = [
+    //entertainment
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.bollywoodlife.com/feed/&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683053032491&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.filmfare.com/feeds/feeds.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683053054080&ct=feedly.desktop&cv=31.0.1792`,
     `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.koimoi.com/feed/&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683053079939&ct=feedly.desktop&cv=31.0.1792`,
-    `https://api.feedly.com/v3/streams/contents?streamId=feed/http://www.pinkvilla.com/rss.xml&count=20&unreadOnly=true&ranked=newest&similar=true&findUrlDuplicates=true&ck=1683053103299&ct=feedly.desktop&cv=31.0.1792`,
-   
+
+
+
 ]
 
-
-
-getData(home_urls);
-
-// function getData(urls) {
-//     items = [];
-//     Promise.all(
-//         urls.map(url => fetch("https://winter-smoke-73a6.sixyjntpqun7805.workers.dev/?url=" + url).catch(error => ({ error })))
-//     )
-//         .then(results => {
-//             // console.log(results.json());
-//             results.forEach(result => {
-//                 if (result.error) {
-//                     console.error(`Error fetching RSS feed: ${result.error.message}`);
-//                     return;
-//                 }
-//                 result.json().then((data) => {
-//                     // console.log(data.items)
-//                     items = [...items, ...data.items];
-//                     items = items.sort((a, b) => new Date(b.published) - new Date(a.published));
-//                     showItem(0);
-//                 });
-
-//             })
-//         })
-//         .catch(error => {
-//             console.error(`Error fetching RSS feeds: ${error.message}`);
-//         });
-
-// }
+getData(urls);
 
 async function getData(urls) {
     items = [];
-    try {
-        const responses = await Promise.all(urls.map(url => fetch(`https://winter-smoke-73a6.sixyjntpqun7805.workers.dev/?url=${url}`).catch(error => ({ error }))));
-        for (const response of responses) {
-            if (response.error) {
-                console.error(`Error fetching RSS feed: ${response.error.message}`);
-                continue;
+    currentIndex = 0;
+    if (!getLocalStorage("data")) {
+        try {
+            const responses = await Promise.all(urls.map(url => fetch(`https://winter-smoke-73a6.sixyjntpqun7805.workers.dev/?url=${url}`).catch(error => ({ error }))));
+            for (const response of responses) {
+                if (response.error) {
+                    console.error(`Error fetching RSS feed: ${response.error.message}`);
+                    continue;
+                }
+                const data = await response.json();
+                const filteredItems = data.items.map(item =>
+                ({
+                    title: item.title ? item.title : ``,
+                    content: item.summary ? item.summary.content : ``,
+                    published: item.published,
+                    canonicalUrl: item.originId ? item.originId : ``,
+                    visual: item.visual ? item.visual.url : `wp.png`
+                })
+                );
+                items.push(...filteredItems);
             }
-            const data = await response.json();
-            const filteredItems = data.items.map(item =>
-            ({
-                title: item.title ? item.title : ``,
-                content: item.summary ? item.summary.content : ``,
-                published: item.published,
-                canonicalUrl: item.originId ? item.originId : ``,
-                visual: item.visual ? item.visual.url : `wp.png`
-                // add additional properties you want to extract here
-            })
-            );
-            items.push(...filteredItems);
+            items = items.sort((a, b) => new Date(b.published) - new Date(a.published));
+            setLocalStorage("data", items, 30 * 60000);
+            showItem(0);
+        } catch (error) {
+            console.error(`${error.stack}`);
         }
-        items = items.sort((a, b) => new Date(b.published) - new Date(a.published));
-        // console.log(items);
+    } else {
+        items = getLocalStorage("data");
         showItem(0);
-    } catch (error) {
-        console.error(`Error fetching RSS feeds: ${error.message}`);
     }
+
 }
 
 $("#Home").on("click", function () {
@@ -250,5 +218,25 @@ $("#cricket").on("click", function () {
     getData(cricket_urls);
 })
 
+
+const text = "John is playing soccer on the weekends.";
+
+const nounRegex = /([A-Za-z]+)(s)?\b/g;
+const verbRegex = /(\b[A-Za-z]+)(ing)?\b/g;
+
+const nouns = [];
+const verbs = [];
+
+let match;
+while ((match = nounRegex.exec(text)) !== null) {
+  nouns.push(match[1]);
+}
+
+while ((match = verbRegex.exec(text)) !== null) {
+  verbs.push(match[1]);
+}
+
+console.log(`Nouns: ${nouns}`);
+console.log(`Verbs: ${verbs}`);
 
 

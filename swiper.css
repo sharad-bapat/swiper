@@ -26,6 +26,10 @@
   max-width: 75vw;
 }
 
+.content figcaption {
+    display: none;
+}
+
 .content iframe {
     display: block;
     max-width: 80vw !important;
@@ -34,6 +38,7 @@
     object-fit: contain;
 }
 
-figcaption {
-    display: none;
+
+#main {
+    min-height: calc(100vh - 25px);
 }

@@ -46,16 +46,7 @@ function showItem(index) {
         const div = document.createElement('div');
 
         const datediv = document.createElement('p')
-        const date = new Date(item.published);
-        // const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        // const weekday = weekdays[date.getDay()];
-        // const day = date.getDate();        
-        // const month = date.toLocaleString('default', { month: 'long' });
-        // const year = date.getFullYear();
-        // const hours = ('0' + date.getHours()).slice(-2);
-        // const minutes = ('0' + date.getMinutes()).slice(-2);
-        // const seconds = ('0' + date.getSeconds()).slice(-2);
-        // const formattedDate = `${weekday}, ${month} ${day}, ${year}, ${hours}:${minutes}:${seconds}`;
+        const date = new Date(item.published);      
         const formattedDate = date.toLocaleString(undefined, {
             weekday: 'long',
             year: 'numeric',
@@ -102,9 +93,9 @@ function showItem(index) {
         container1.innerHTML = '';
         container1.appendChild(div);
 
+        //remove the image in body if already in header
         const images = container1.querySelectorAll('img');
         const srcMap = {};
-
         for (const image of images) {
             if (image.src.split('?').shift() in srcMap) {                
                 image.remove();
@@ -195,48 +186,5 @@ async function getData(urls) {
     }
 
 }
-
-$("#Home").on("click", function () {
-    getData(home_urls);
-})
-$("#India").on("click", function () {
-    getData(india_urls);
-})
-$("#Business").on("click", function () {
-    getData(business_urls);
-})
-
-$("#Tech").on("click", function () {
-    getData(tech_urls);
-})
-
-$("#Bollywood").on("click", function () {
-    getData(bollywood_urls);
-})
-
-$("#cricket").on("click", function () {
-    getData(cricket_urls);
-})
-
-
-const text = "John is playing soccer on the weekends.";
-
-const nounRegex = /([A-Za-z]+)(s)?\b/g;
-const verbRegex = /(\b[A-Za-z]+)(ing)?\b/g;
-
-const nouns = [];
-const verbs = [];
-
-let match;
-while ((match = nounRegex.exec(text)) !== null) {
-  nouns.push(match[1]);
-}
-
-while ((match = verbRegex.exec(text)) !== null) {
-  verbs.push(match[1]);
-}
-
-console.log(`Nouns: ${nouns}`);
-console.log(`Verbs: ${verbs}`);
 
 

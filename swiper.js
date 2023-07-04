@@ -156,7 +156,7 @@ async function getData(urls) {
     currentIndex = 0;
     if (!getLocalStorage("data")) {
         try {
-            const responses = await Promise.all(urls.map(url => fetch(`https://winter-smoke-73a6.sixyjntpqun7805.workers.dev/?url=${url}`).catch(error => ({ error }))));
+            const responses = await Promise.all(urls.map(url => fetch(`https://cors.t1m3.workers.dev/?url=${url}`).catch(error => ({ error }))));
             for (const response of responses) {
                 if (response.error) {
                     console.error(`Error fetching RSS feed: ${response.error.message}`);
